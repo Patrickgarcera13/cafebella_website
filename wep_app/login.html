@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login - Cafe Bella</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Domine:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Domine', serif;
+}
+
+body {
+  height: 100vh;
+  background: url('IMAGES/background.jpg') no-repeat center center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  will-change: opacity;
+}
+
+/******************************** LOG IN CONTAINER / LOGO ********************************/
+.login-container {
+  width: 380px;
+  background: #fff;
+  border-radius: 25px;
+  border: 4px solid #114500;
+  padding: 70px 30px 30px;
+  text-align: center;
+  position: relative;
+}
+.logo {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 5px solid #114500;
+  border-radius: 50%;
+  padding: 5px;
+}
+.logo img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+}
+
+/******************************** TEXTS ********************************/
+h1 {
+  color: #114500;
+  margin-bottom: 5px;
+}
+.subtitle {
+  font-size: 14px;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/******************************** FORM ********************************/
+label {
+  display: block;
+  text-align: left;
+  margin-bottom: 5px;
+  color: #114500;
+  font-weight: 600;
+}
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  outline: none;
+}
+
+/******************************** BUTTON ********************************/
+button {
+  background: #114500;
+  color: white;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+button:hover {
+  opacity: 0.9;
+}
+
+/******************************** LINKS ********************************/
+.forgot {
+  font-size: 13px;
+  margin: 8px 0;
+  color: #555;
+}
+.divider {
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #114500;
+}
+.divider span {
+  margin: 0 10px;
+  color: #114500;
+}
+
+/******************************** SOCIAL ICONS ********************************/
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.social-icons img {
+  width: 20px;
+  cursor: pointer;
+}
+
+/******************************** SIGN UP HERE ********************************/
+.signup {
+  font-size: 14px;
+}
+.signup a {
+  color: #114500;
+  font-weight: 600;
+  text-decoration: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+<!--------------------------------------- LOGO ---------------------------------------------> 
+  <div class="logo">
+    <img src="IMAGES/Cafebella.jpg" alt="Cafe Bella Logo">
+  </div>
+
+<!--------------------------------------- TITLE ---------------------------------------------> 
+  <h1>Welcome back !</h1>
+  <p class="subtitle">Sign in to manage your events and bookings.</p>
+
+<!--------------------------------------- FORM ---------------------------------------------> 
+  <form id="loginForm">
+    <label>Email or Username</label>
+    <input type="text" id="email" placeholder="Enter your email" required>
+
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Enter your password">
+
+    <button type="submit">Log in</button>
+  </form>
+
+  <div id="message"></div>
+
+  <p class="forgot">Forgot password ?</p>
+
+  <div class="divider"><span>or</span></div>
+
+<!--------------------------------------- SOCIAL LOG IN ---------------------------------------------> 
+  <div class="social-icons">
+    <a href="https://www.facebook.com/login" target="_blank">
+      <img src="IMAGES/facebookicon.png" alt="Facebook">
+    </a>
+
+    <a href="https://accounts.google.com/signin" target="_blank">
+      <img src="IMAGES/gmailicon.png" alt="Gmail">
+    </a>
+  </div>
+
+<!--------------------------------------- SIGN UP  ---------------------------------------------> 
+<p class="signup">
+  Don’t have an account ? <a href="signup.html">Sign up here</a>
+</p>
+
+</div>
+
+</body>
+</html>
+<script>
+
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("message");
+
+    message.innerHTML = "⏳ Logging in...";
+
+    fetch("http://localhost/cafebella_website/web_app/login.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: email,
+            password: password
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            message.innerHTML = "✅ Login successful!";
+            
+            setTimeout(() => {
+                window.location.href = "Dashboard.php";
+            }, 1000);
+        } else {
+            message.innerHTML = "❌ " + data.message;
+        }
+    })
+    .catch(err => {
+        message.innerHTML = "❌ Server error!";
+    });
+});
+/*
+// Fade IN when page loads
+window.addEventListener("load", () => {
+  document.body.classList.add("fade-in");
+});
+
+// Fade OUT when clicking links
+document.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", function(e) {
+    const href = this.getAttribute("href");
+
+    // ignore external links
+    if (href && !href.startsWith("http") && !href.startsWith("#")) {
+      e.preventDefault();
+      document.body.classList.remove("fade-in");
+
+      setTimeout(() => {
+        window.location.href = href;
+      }, 200); // match CSS duration
+    }
+  });
+});
+*/
+</script>
