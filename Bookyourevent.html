@@ -539,40 +539,49 @@ textarea {
   <div class="card rise-item">
     <div class="section-title rise-item">Customer Details</div>
 
+    <!-------------------------------- FULL NAME ------------------------------------->
+
     <label>Full Name</label>
     <input type="text" id="full_name"
        placeholder="Enter your Full Name" 
        required 
-       pattern="[A-Za-z\s]+" 
-       title="Please enter your full name using letters only">
+       pattern="[A-Za-z.\s]+"
+       title="Please enter your full name using letters, spaces, and dot (.) are allowed">
+
+       <!-------------------------------- EMAIL ADDRESS ------------------------------------->
 
     <label>Email Address</label>
-      <input type="email" id="email" placeholder="example@hotmail.com" required 
-       pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" 
-       title="Please enter a valid email, e.g., example@hotmail.com">
+      <input type="email" id="email"
+      placeholder="example@hotmail.com" required 
+      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" 
+      title="Please enter a valid email, e.g., example@hotmail.com">
     <div class="row">
       <div style="flex:1;">
         <label>Facebook / Messenger</label>
         <input type="text" id="facebook" 
-       placeholder="@username" 
-       pattern="^@[\w]+$" 
-       title="Enter a valid username starting with @" 
-       required 
-       style="text-indent: 10px;">
+               placeholder="@username" 
+               pattern="^[A-Za-z0-9.@\s]+$"
+               title="Enter a valid username (letters, numbers, ., @ allowed)" 
+               required 
+               style="text-indent: 10px;">
       </div>
+
+      <!-------------------------------- CONTACT NUMBER ------------------------------------->
 
       <div style="flex:1;">
         <label>Contact Number</label>
         <input type="tel"
           id="phone"
           placeholder="e.g. 09123456789" 
-          pattern="[0-9]{10,11}" 
+          pattern="^09\d{9}$" 
           inputmode="numeric"
-          title="Please enter 10-11 digits only"
+          title="Enter a valid PH number (09XXXXXXXXX)"
           required>      
       </div>
     </div>
   </div>
+
+  <!-------------------------------- EVENT PACKAGE: SERVICE ------------------------------------->
 
   <div class="card rise-item">
     <div class="section-title">Service Selection</div>
@@ -611,6 +620,8 @@ textarea {
 
   <div class="booking-layout">
 
+    <!-------------------------------- CALENDAR ------------------------------------->
+
     <!-- LEFT: CALENDAR -->
     <div class="calendar-box">
       <label class="section-label">Select Date</label>
@@ -621,6 +632,8 @@ textarea {
     <div class="details-box">
 
       <div class="form-row">
+
+        <!-------------------------------- TIME: EVENT STARTS ------------------------------------->
 
         <div class="form-group">
           <label>Time</label>
@@ -638,25 +651,55 @@ textarea {
           </select>
         </div>
 
+        <!-------------------------------- GUESTS ------------------------------------->
+
         <div class="form-group">
           <label>Number of Guests</label>
           <select id="guests" required>
             <option value="" disabled selected>Select guests</option>
-            <option>5 people</option>
             <option>10 people</option>
             <option>20 people</option>
             <option>30 people</option>
             <option>40 people</option>
+            <option>50 people</option>
           </select>
         </div>
 
       </div>
 
+      <!-------------------------------- EVENT ADDRESS ------------------------------------->
+
       <div class="form-group">
-        <label>Event Address</label>
-        <input type="text" id="event_address" placeholder="Enter venue or address">
+        <label>Province</label>
+        <select id="province" name="province" required>
+          <option value="">Select Province</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>City / Municipality</label>
+        <select id="city" name="city" required>
+          <option value="">Select City</option>
+        </select>
       </div>
 
+      <div class="form-group">
+        <label>Barangay</label>
+        <select id="barangay" name="barangay" required>
+          <option value="">Select Barangay</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+          <label>Zip Code</label>
+          <input type="text" name="zip_code" id="zip_code" placeholder="Zip Code" required>
+        </div>
+
+        <div class="form-group">
+          <label>House No. / Street</label>
+          <input type="text" name="street" id="street" placeholder="House No. and Street" required>
+        </div>
+        <!-------------------------------- EVENT ADDRESS DONE ------------------------------------->
     </div>
 
   </div>
@@ -839,40 +882,7 @@ function handleRise() {
 window.addEventListener("scroll", handleRise);
 window.addEventListener("load", handleRise);
 
-
-/******************************** CALENDAR FLATPICKR **************************/
-let selectedDate = "";
-const bookedDates = [
-        "2026-03-01","2026-03-03","2026-03-05",
-        "2026-03-08","2026-03-10","2026-03-12",
-        "2026-03-15","2026-03-18","2026-03-22",
-        "2026-03-25"
-    ];
-
-    flatpickr("#calendar", {
-        inline: true,
-        minDate: "today",
-        disable: bookedDates,
-        dateFormat: "Y-m-d",
-
-        onDayCreate: function(dObj, dStr, fp, dayElem){
-            const date = dayElem.dateObj;
-            const formattedDate = fp.formatDate(date, "Y-m-d");
-
-            if(bookedDates.includes(formattedDate)){
-                dayElem.classList.add("booked-date");
-                dayElem.title = "Fully Booked";
-            }
-        },
-
-        onChange: function(selectedDates, dateStr){
-            selectedDate = dateStr;
-            document.getElementById("service_package").value = selectedService;
-            console.log("Selected Date:", selectedDate);
-        }
-    });
-
-    /******************************** PACKAGE SELECTION → AUTO-LOCK ********************************/
+/******************************** PACKAGE SELECTION → AUTO-LOCK ********************************/
 let selectedService = "";
 let isLocked = false; // 🔒 lock flag
 
@@ -937,6 +947,99 @@ document.addEventListener("DOMContentLoaded", function() {
     localStorage.removeItem("selectedService");
 });
 
+/******************************** CALENDAR FLATPICKR **************************/
+let selectedDate = "";
+const bookedDates = [
+        "2026-03-01","2026-03-03","2026-03-05",
+        "2026-03-08","2026-03-10","2026-03-12",
+        "2026-03-15","2026-03-18","2026-03-22",
+        "2026-03-25"
+    ];
+
+    flatpickr("#calendar", {
+        inline: true,
+        minDate: "today",
+        disable: bookedDates,
+        dateFormat: "Y-m-d",
+
+        onDayCreate: function(dObj, dStr, fp, dayElem){
+            const date = dayElem.dateObj;
+            const formattedDate = fp.formatDate(date, "Y-m-d");
+
+            if(bookedDates.includes(formattedDate)){
+                dayElem.classList.add("booked-date");
+                dayElem.title = "Fully Booked";
+            }
+        },
+
+        onChange: function(selectedDates, dateStr){
+        const selected = new Date(dateStr);
+        const minAllowed = new Date().fp_incr(7);
+
+        if (selected < minAllowed) {
+            alert("❌ Bookings must be at least 1 week in advance.");
+            selectedDate = "";
+            return;
+        }
+
+        selectedDate = dateStr;
+        document.getElementById("service_package").value = selectedService;
+        console.log("Selected Date:", selectedDate);
+    }
+  });
+
+/******************************** PHILIPPINE AUTO-LOAD ADDRESS **************************/    
+    const provinceSelect = document.getElementById("province");
+    const citySelect = document.getElementById("city");
+    const barangaySelect = document.getElementById("barangay");
+
+// Load Provinces
+fetch("https://psgc.gitlab.io/api/provinces/")
+  .then(res => res.json())
+  .then(data => {
+    data.sort((a, b) => a.name.localeCompare(b.name));
+    data.forEach(province => {
+      provinceSelect.innerHTML += `<option value="${province.code}">${province.name}</option>`;
+    });
+  });
+
+// When Province changes → load Cities
+provinceSelect.addEventListener("change", function () {
+  const provinceCode = this.value;
+
+  citySelect.innerHTML = `<option value="">Loading...</option>`;
+  barangaySelect.innerHTML = `<option value="">Select Barangay</option>`;
+
+  fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities-municipalities/`)
+    .then(res => res.json())
+    .then(data => {
+      citySelect.innerHTML = `<option value="">Select City</option>`;
+      data.sort((a, b) => a.name.localeCompare(b.name));
+
+      data.forEach(city => {
+        citySelect.innerHTML += `<option value="${city.code}">${city.name}</option>`;
+      });
+    });
+});
+
+// When City changes → load Barangays
+citySelect.addEventListener("change", function () {
+  const cityCode = this.value;
+
+  barangaySelect.innerHTML = `<option value="">Loading...</option>`;
+
+  fetch(`https://psgc.gitlab.io/api/cities-municipalities/${cityCode}/barangays/`)
+    .then(res => res.json())
+    .then(data => {
+      barangaySelect.innerHTML = `<option value="">Select Barangay</option>`;
+      data.sort((a, b) => a.name.localeCompare(b.name));
+
+      data.forEach(brgy => {
+        barangaySelect.innerHTML += `<option value="${brgy.name}">${brgy.name}</option>`;
+      });
+    });
+});
+
 /******************************** CONTACT NUMBER RESTRICTION **************************/
 const contactInput = document.querySelector('input[placeholder*="0912"]'); 
 
@@ -958,17 +1061,20 @@ contactInput.addEventListener("keypress", function(e) {
 
 // LIMIT to 11 digits (MAIN FIX)
 contactInput.addEventListener("input", function() {
-    let value = contactInput.value;
+    let value = contactInput.value.replace(/\D/g, '');
 
-    // Remove non-numbers (extra safety)
-    value = value.replace(/\D/g, '');
-
-    // Limit to 11 digits
     if (value.length > 11) {
         value = value.slice(0, 11);
     }
 
     contactInput.value = value;
+
+    // ✅ NEW: check if starts with 09
+    if (value.length >= 2 && !value.startsWith("09")) {
+        errorMsg.textContent = "Must start with 09 (PH number)";
+    } else if (value.length === 11) {
+        errorMsg.textContent = "";
+    }
 });
 
 // BLOCK invalid paste
@@ -990,20 +1096,35 @@ contactInput.addEventListener("paste", function(e) {
 /******************************** COMPLETE BOOKING + PAYMENT REDIRECT **************************/
 document.getElementById('bookingForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
+    // 🔥 CREATE FULL ADDRESS
+    const fullAddress =
+      document.getElementById("street").value + ", " +
+      document.getElementById("barangay").options[document.getElementById("barangay").selectedIndex].text + ", " +
+      document.getElementById("city").options[document.getElementById("city").selectedIndex].text + ", " +
+      document.getElementById("province").options[document.getElementById("province").selectedIndex].text + ", " +
+      document.getElementById("zip_code").value;
+
     // ✅ VALIDATIONS
     const paymentType = document.querySelector('input[name="payment_type"]:checked')?.value;
     const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
+    
+    
     if (!document.getElementById("service_package").value) {
     alert("❌ No service selected!");
     return;
-}
+    }
     if (!selectedDate) return alert('❌ Select a date!');
     if (!paymentMethod) return alert('❌ Select Cash or GCash!');
     if (!selectedService) return alert('❌ Select a package first!');
     if (!document.getElementById('booking_time').value) return alert('❌ Select time!');
+    
     if (!document.getElementById('guests').value) return alert('❌ Select number of guests!');
-    if (!document.getElementById('event_address').value) return alert('❌ Enter event address!');
+    if (!document.getElementById('province').value) return alert('❌ Select province!');
+    if (!document.getElementById('city').value) return alert('❌ Select city!');
+    if (!document.getElementById('barangay').value) return alert('❌ Select barangay!');
+    if (!document.getElementById('street').value) return alert('❌ Enter street!');
+    
     if (!paymentMethod) return alert('❌ Select payment method!');
     if (!document.getElementById('agree').checked) return alert('❌ Agree to Terms!');
     
@@ -1017,7 +1138,12 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
         booking_date: selectedDate,
         booking_time: document.getElementById('booking_time').value,
         guests: document.getElementById('guests').value,
-        event_address: document.getElementById('event_address').value,
+        event_address: fullAddress,
+        province: document.getElementById('province').value,
+        city: document.getElementById('city').value,
+        barangay: document.getElementById('barangay').value,
+        zip_code: document.getElementById('zip_code').value,
+        street: document.getElementById('street').value,
         preferences: document.getElementById('preferences').value,
         payment_type: paymentType,
         payment_method: paymentMethod
